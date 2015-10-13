@@ -111,7 +111,7 @@ class ScheduleTweets extends Command
             $tweet = '';
             $event['name'] = substr($event['name'], 0, (140 - 60));
             $event['name'] = preg_replace('/ [^ ]*$/', '...', $event['name']);
-            $tweet = $event['name'] . ' ' . $time_string . ' #memtech' . $event['event_url'];
+            $tweet = $event['name'] . ' ' . $time_string . ' #memtech ' . $event['event_url'];
 
         }
         else
