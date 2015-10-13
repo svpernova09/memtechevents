@@ -55,7 +55,7 @@ class ScheduleTweets extends Command
             $time = $this->getEventTime($event->time);
             $this->info('Event: ' . $event['name'] . ' at ' . $time->format('jS \o\f M \a\t h:ia'));
 
-            $content = $event['name'] . ' at ' . $time->format('jS \o\f M \a\t h:ia') . ' ' . $event['event_url'];
+            $content = $event['name'] . ' at ' . $time->format('jS \o\f M \a\t h:ia') . ' #memtech ' . $event['event_url'];
             $tweet = $this->reformatStatus($content, $event, $time->format('jS \o\f M \a\t h:ia'));
             $tweet_at = $time->subDays(3)->subHours(10)->setTimezone('America/Chicago');
 
@@ -83,8 +83,8 @@ class ScheduleTweets extends Command
         {
             $tweet = '';
             $event['name'] = substr($event['name'], 0, (140 - 60));
-            $event['name'] = preg_replace('/ [^ ]*$/', ' ...', $event['name']);
-            $tweet = $event['name'] . ' ' . $time_string . ' ' . $event['event_url'];
+            $event['name'] = preg_replace('/ [^ ]*$/', '...', $event['name']);
+            $tweet = $event['name'] . ' ' . $time_string . ' #memtech' . $event['event_url'];
 
         }
         else
