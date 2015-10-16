@@ -2,10 +2,12 @@
 
 namespace MemtechEvents\Console\Commands;
 
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Console\Command;
+use MemtechEvents\Event;
 use MemtechEvents\Tweet;
 use TwitterAPIExchange;
+use Carbon\Carbon;
 
 class ProcessTweets extends Command
 {
@@ -50,8 +52,20 @@ class ProcessTweets extends Command
         {
             foreach ($tweets as $tweet)
             {
-                $this->postTweet($tweet->content);
-                $this->setTweetAsSent($tweet->id);
+                try
+                {
+                    $event = Event::where('event_id', $tweet->event_id)->firstOrFail();
+                }
+                catch (ModelNotFoundException $e)
+                {
+                    $this->info('Event with event_id ' . $tweet->event_id . ' not found');
+                }
+
+                if (!$event->isCancelled($tweet->event_id))
+                {
+                    $this->postTweet($tweet->content);
+                    $this->setTweetAsSent($tweet->id);
+                }
             }
         }
     }
@@ -95,6 +109,15 @@ class ProcessTweets extends Command
         $tweet = Tweet::find($id);
         $tweet->sent = true;
 
-        $tweet->save();
+        if (!$this->option('debug'))
+        {
+            $tweet->save();
+        }
+
+        if ($this->option('debug'))
+        {
+            $this->info('We should have set tweet->id ' . $tweet->id . ' to sent');
+        }
     }
+
 }

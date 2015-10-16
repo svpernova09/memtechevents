@@ -65,4 +65,16 @@ class Event extends Model
             ->where('status', 'upcoming')
             ->get();
     }
+
+    public function isCancelled($event_id)
+    {
+        $event = $this->where('event_id', $event_id)->first();
+
+        if ($event->status == 'cancelled')
+        {
+            return true;
+        }
+
+        return false;
+    }
 }
